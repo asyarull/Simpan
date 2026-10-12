@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simpan — Your personal study vault</title>
+  <meta name="description" content="Simpan is a personal study vault to save, organize, search, and track learning materials.">
+  <meta name="theme-color" content="#f7f3ec">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%237a1f2b'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' text-anchor='middle' fill='%23f7f3ec'%3ES%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <a class="wordmark" href="#overview" data-view-link="overview">Simpan<span class="wordmark__dot" aria-hidden="true">.</span></a>
+      <p class="tagline">Your personal study vault</p>
+    </div>
+
+    <search class="search">
+      <label for="search-input" class="sr-only">Search materials</label>
+      <svg class="search__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        <circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M13 13l4.25 4.25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <input type="search" id="search-input" class="search__input" placeholder="Search titles, tags, categories…" autocomplete="off" spellcheck="false" aria-keyshortcuts="/ Control+K">
+      <kbd class="search__hint" aria-hidden="true">/</kbd>
+    </search>
+
+    <button type="button" class="btn btn--primary add-btn" data-action="add">
+      <span aria-hidden="true" class="add-btn__plus">+</span> Add material
+    </button>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Vault">
+      <ul class="side-list side-list--primary">
+        <li><a class="side-link" href="#overview" data-view-link="overview">Overview</a></li>
+        <li><a class="side-link" href="#library" data-view-link="library">Library <span class="count" data-count="all"></span></a></li>
+      </ul>
+
+      <div class="side-group">
+        <h2 class="side-heading">Status</h2>
+        <ul class="side-list" id="status-nav"></ul>
+      </div>
+
+      <div class="side-group">
+        <h2 class="side-heading">Shelves</h2>
+        <ul class="side-list" id="category-nav"></ul>
+      </div>
+
+      <p class="side-note">Saved privately in this browser.</p>
+    </nav>
+
+    <main id="main" class="main" tabindex="-1">
+      <!-- Overview -->
+      <section id="view-overview" class="view" aria-labelledby="greeting">
+        <header class="greeting">
+          <p class="eyebrow" id="today-label"></p>
+          <h1 class="greeting__title" id="greeting" tabindex="-1">Hello</h1>
+          <p class="greeting__sub">Keep what you learn. Find it when you need it.</p>
+        </header>
+
+        <div id="overview-empty" hidden></div>
+
+        <div id="overview-content" hidden>
+          <section class="stats" aria-labelledby="stats-title">
+            <h2 id="stats-title" class="sr-only">Vault statistics</h2>
+            <dl class="stats__grid">
+              <div class="stat">
+                <dt>Total materials</dt>
+                <dd id="stat-total">0</dd>
+              </div>
+              <div class="stat">
+                <dt>Currently learning</dt>
+                <dd id="stat-learning">0</dd>
+              </div>
+              <div class="stat">
+                <dt>Completed</dt>
+                <dd id="stat-done">0</dd>
+              </div>
+              <div class="stat">
+                <dt>Categories</dt>
+                <dd><span id="stat-categories">0</span><span class="stat__of"> / 6</span></dd>
+              </div>
+            </dl>
+            <div class="progress">
+              <p class="progress__label"><span>Completion</span><span id="progress-text">0% done</span></p>
+              <div class="progress__track" aria-hidden="true"><div class="progress__fill" id="progress-fill"></div></div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="continue-title">
+            <div class="section__head">
+              <h2 class="section__title" id="continue-title" tabindex="-1">Continue learning</h2>
+              <button type="button" class="link-btn" data-action="filter-status" data-value="learning" data-force="true">View all<span class="sr-only"> materials in progress</span></button>
+            </div>
+            <div class="card-grid" id="continue-list"></div>
+          </section>
+
+          <div class="split">
+            <section class="section" aria-labelledby="recent-title">
+              <div class="section__head">
+                <h2 class="section__title" id="recent-title" tabindex="-1">Recently added</h2>
+                <a class="link-btn" href="#library" data-view-link="library">Open library</a>
+              </div>
+              <ol class="recent-list" id="recent-list"></ol>
+            </section>
+
+            <section class="section" aria-labelledby="categories-title">
+              <div class="section__head">
+                <h2 class="section__title" id="categories-title" tabindex="-1">Categories</h2>
+              </div>
+              <ul class="shelf-grid" id="category-grid"></ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- Library -->
+      <section id="view-library" class="view" aria-labelledby="library-title" hidden>
+        <header class="library-head">
+          <p class="eyebrow">The collection</p>
+          <h1 class="library-head__title" id="library-title" tabindex="-1">Library</h1>
+          <p class="library-head__summary" id="result-summary" aria-live="polite"></p>
+        </header>
+
+        <div class="toolbar">
+          <div class="segmented" role="group" aria-label="Filter by status">
+            <button type="button" class="segmented__btn" data-action="filter-status" data-value="all" data-force="true" aria-pressed="true">All</button>
+            <button type="button" class="segmented__btn" data-action="filter-status" data-value="learning" data-force="true" aria-pressed="false">Learning</button>
+            <button type="button" class="segmented__btn" data-action="filter-status" data-value="done" data-force="true" aria-pressed="false">Done</button>
+          </div>
+
+          <div class="toolbar__selects">
+            <label class="select-field">
+              <span class="select-field__label">Category</span>
+              <select id="category-filter" class="select">
+                <option value="all">All categories</option>
+              </select>
+            </label>
+            <label class="select-field">
+              <span class="select-field__label">Sort</span>
+              <select id="sort-select" class="select">
+                <option value="recent">Recently added</option>
+                <option value="oldest">Oldest</option>
+                <option value="alpha">Alphabetical</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="chips" id="active-filters"></div>
+        <div class="card-grid" id="library-list"></div>
+        <div id="library-empty" hidden></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add / edit material -->
+  <dialog id="material-dialog" class="dialog" aria-labelledby="material-dialog-title">
+    <form id="material-form" class="dialog__inner" novalidate>
+      <header class="dialog__head">
+        <p class="eyebrow" id="material-dialog-eyebrow">New entry</p>
+        <h2 class="dialog__title" id="material-dialog-title">Add material</h2>
+        <button type="button" class="icon-btn dialog__close" data-close aria-label="Close">
+          <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div class="dialog__body">
+        <div class="field" data-field="title">
+          <label class="field__label" for="f-title">Title <span class="field__req">required</span></label>
+          <input class="input" id="f-title" name="title" type="text" maxlength="140" required autocomplete="off" aria-describedby="f-title-error">
+          <p class="field__error" id="f-title-error"></p>
+        </div>
+
+        <div class="field" data-field="description">
+          <label class="field__label" for="f-description">Description</label>
+          <textarea class="input input--area" id="f-description" name="description" rows="4" maxlength="2000" placeholder="What is it, and why is it worth keeping?"></textarea>
+        </div>
+
+        <div class="field-row">
+          <div class="field" data-field="category">
+            <label class="field__label" for="f-category">Category</label>
+            <select class="input select" id="f-category" name="category"></select>
+          </div>
+
+          <fieldset class="field field--choices" data-field="status">
+            <legend class="field__label">Status</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="status" value="learning" checked> Learning</label>
+              <label class="choice"><input type="radio" name="status" value="done"> Done</label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="field" data-field="tags">
+          <label class="field__label" for="f-tags">Tags</label>
+          <input class="input" id="f-tags" name="tags" type="text" autocomplete="off" placeholder="algebra, practice, week-3" aria-describedby="f-tags-hint">
+          <p class="field__hint" id="f-tags-hint">Separate tags with commas.</p>
+        </div>
+
+        <div class="field" data-field="url">
+          <label class="field__label" for="f-url">Resource URL <span class="field__opt">optional</span></label>
+          <input class="input" id="f-url" name="url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://" aria-describedby="f-url-hint f-url-error">
+          <p class="field__hint" id="f-url-hint">A link to the article, video, or document.</p>
+          <p class="field__error" id="f-url-error"></p>
+        </div>
+      </div>
+
+      <footer class="dialog__foot">
+        <p class="dialog__shortcut" aria-hidden="true"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to save</p>
+        <button type="button" class="btn btn--ghost" data-close>Cancel</button>
+        <button type="submit" class="btn btn--primary" id="material-submit">Save to vault</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Material details -->
+  <dialog id="detail-dialog" class="dialog dialog--detail" aria-labelledby="detail-title">
+    <div class="dialog__inner" id="detail-content"></div>
+  </dialog>
+
+  <!-- Delete confirmation -->
+  <dialog id="confirm-dialog" class="dialog dialog--confirm" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form method="dialog" class="dialog__inner">
+      <header class="dialog__head">
+        <p class="eyebrow">Delete material</p>
+        <h2 class="dialog__title" id="confirm-title">Delete “<span id="confirm-name"></span>”?</h2>
+      </header>
+      <div class="dialog__body">
+        <p id="confirm-text" class="confirm__text">This removes it from your vault permanently. This can’t be undone.</p>
+      </div>
+      <footer class="dialog__foot">
+        <button type="submit" class="btn btn--ghost" value="cancel" id="confirm-cancel">Keep it</button>
+        <button type="submit" class="btn btn--danger" value="confirm">Delete</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+</body>
+</html>
